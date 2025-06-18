@@ -1,0 +1,45 @@
+Best Open-Source FinOps Tools for Kubernetes Cost Management
+Tool	Features	Installation
+Kubecost	Real-time cost monitoring, allocation per pod, and alerts	✅ Easy (Helm)
+OpenCost	CNCF-supported, detailed cost breakdown per pod	✅ Lightweight
+Kube-green	Auto-scaling based on pod usage & sleep mode for unused pods	✅ Energy-efficient
+Goldilocks	Recommends optimal CPU/memory requests per pod	✅ Works with VPA
+
+
+
+
+Komiser  , OpenCost
+
+===========================================================================================
+1. Install OpenCost
+Add Helm Repository:
+helm repo add opencost https://opencost.github.io/opencost/
+helm repo update
+
+Install OpenCost:
+helm install opencost opencost/opencost --namespace opencost --create-namespace
+
+2. Access OpenCost Dashboard
+Expose the Dashboard using port-forwarding:4
+
+note
+kubectl port-forward -n opencost svc/opencost 9090:9090
+Access: Open your browser and visit: http://localhost:9090.
+
+============================================================================================
+
+
+
+    spec:
+      containers:
+      - env:
+        - name: LOG_LEVEL
+          value: info
+        - name: CUSTOM_COST_ENABLED
+          value: "false"
+        - name: KUBECOST_NAMESPACE
+          value: opencost
+        - name: API_PORT
+          value: "9003"
+        - name: PROMETHEUS_SERVER_ENDPOINT
+          value: http://prometheus-server.prometheus-system.svc.cluster.local:80
