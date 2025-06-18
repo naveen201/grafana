@@ -1,0 +1,190 @@
+helm install loki-release grafana/loki-stack \
+  --namespace loki-new \
+  --set grafana.enabled=false \
+  --set promtail.enabled=true \
+  --set loki.enabled=true
+NAME: loki-release
+LAST DEPLOYED: Fri Mar 21 15:09:23 2025
+NAMESPACE: loki-new
+STATUS: deployed
+REVISION: 1
+NOTES:
+The Loki stack has been deployed to your cluster. Loki can now be added as a datasource in Grafana.
+
+See http://docs.grafana.org/features/datasources/loki/ for more detail.
+
+Dell@DESKTOP-PSBN9NJ MINGW64 /d/VScode
+$
+
+
+==============
+helm upgrade --install loki-release grafana/loki-stack \
+  --namespace loki-new \
+  --set grafana.enabled=false \
+  --set promtail.enabled=true \
+  --set loki.enabled=true \
+  --set loki.persistence.enabled=true \
+  --set loki.persistence.size=10Gi \
+  --set loki.persistence.storageClassName=ebs-sc
+
+
+Release "loki-release" does not exist. Installing it now.
+NAME: loki-release
+LAST DEPLOYED: Fri Mar 21 15:15:24 2025
+NAMESPACE: loki-new
+STATUS: deployed
+REVISION: 1
+NOTES:
+The Loki stack has been deployed to your cluster. Loki can now be added as a datasource in Grafana.
+
+See http://docs.grafana.org/features/datasources/loki/ for more detail.
+
+Dell@DESKTOP-PSBN9NJ MINGW64 /d/VScode
+$
+
+
+
+=============
+helm repo add grafana https://grafana.github.io/helm-charts
+helm repo update
+
+
+helm install loki-release grafana/loki-stack \
+  --namespace loki \
+  --set grafana.enabled=false \
+  --set prometheus.enabled=false \
+  --set loki.persistence.enabled=true \
+  --set loki.persistence.storageClassName="ebs-sc" \
+  --set loki.persistence.size="10Gi"
+
+
+
+=============================
+helm install loki-release grafana/loki-stack \
+  --namespace loki \
+  --set grafana.enabled=false \
+  --set prometheus.enabled=false \
+  --set loki.persistence.enabled=true \
+  --set loki.persistence.storageClassName="ebs-sc" \
+  --set loki.persistence.size="10Gi" \
+  --set loki.persistence.accessMode="ReadWriteOnce" \
+  --set loki.resources.requests.memory="512Mi" \
+  --set loki.resources.limits.memory="1024Mi" \
+  --set loki.resources.requests.cpu="250m" \
+  --set loki.resources.limits.cpu="500m" \
+  --set loki.replicaCount=1
+
+
+==========
+ubectl get roles -n loki
+NAME           CREATED AT
+logging-loki   2025-03-21T07:33:44Z
+
+Dell@DESKTOP-PSBN9NJ MINGW64 /d/VScode
+
+
+==
+kubectl describe role logging-loki -n loki
+Name:         logging-loki
+Labels:       app=loki
+              app.kubernetes.io/managed-by=Helm
+              chart=loki-2.16.0
+              heritage=Helm
+              release=logging
+Annotations:  meta.helm.sh/release-name: logging
+              meta.helm.sh/release-namespace: loki
+PolicyRule:
+  Resources                       Non-Resource URLs  Resource Names  Verbs
+  ---------                       -----------------  --------------  -----
+  podsecuritypolicies.extensions  []                 [logging-loki]  [use]
+
+Dell@DESKTOP-PSBN9NJ MINGW64 /d/VScode
+$
+
+
+====================image tage issue with 2.6.1 update 2.9.3----loki:2.6.1
+
+helm install loki-release grafana/loki-stack \
+  --namespace loki \
+  --set grafana.enabled=false \
+  --set prometheus.enabled=false \
+  --set loki.image.tag=2.9.3 \
+  --set loki.persistence.enabled=true \
+  --set loki.persistence.storageClassName="ebs-sc" \
+  --set loki.persistence.size="10Gi"
+
+
+
+=================working====================================
+helm install loki-release grafana/loki-stack \
+  --namespace loki \
+  --set grafana.enabled=false \
+  --set prometheus.enabled=false \
+  --set loki.image.tag=2.9.3 \
+  --set loki.persistence.enabled=true \
+  --set loki.persistence.storageClassName="ebs-sc" \
+  --set loki.persistence.size="10Gi" \
+  --set promtail.enabled=true
+
+
+============same as above but loki 2replica==================
+
+helm install loki-release grafana/loki-stack \
+  --namespace loki \
+  --set grafana.enabled=false \
+  --set prometheus.enabled=false \
+  --set loki.image.tag=2.9.3 \
+  --set loki.persistence.enabled=true \
+  --set loki.persistence.storageClassName="ebs-sc" \
+  --set loki.persistence.size="10Gi" \
+  --set promtail.enabled=true \
+  --set loki.replicaCount=2
+
+
+
+=====================new========================
+
+ helm install loki-new grafana/loki \
+  --namespace loki-new --create-namespace \
+  --set persistence.enabled=true \
+  --set persistence.storageClassName="ebs-sc" \
+  --set persistence.size="10Gi"
+
+used with details
+
+helm install loki-new grafana/loki \
+  --namespace loki-new --create-namespace \
+  --set persistence.enabled=true \
+  --set persistence.storageClassName="ebs-sc" \
+  --set persistence.size="10Gi" \
+  --set loki.storage.type="s3" \
+  --set loki.storage.s3.endpoint="s3.amazonaws.com" \
+  --set loki.storage.s3.region="us-east-1" \
+  --set loki.storage.s3.access_key_id="AKIAEXAMPLE" \
+  --set loki.storage.s3.secret_access_key="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY" \
+  --set loki.storage.bucketNames.chunks="loki-chunks" \
+  --set loki.storage.bucketNames.ruler="loki-ruler" \
+  --set loki.storage.bucketNames.admin="loki-admin"
+
+
+
+
+helm install loki-release grafana/loki-stack \
+  --namespace loki \
+  --set grafana.enabled=false \
+  --set prometheus.enabled=false \
+  --set loki.image.tag=2.9.3 \
+  --set loki.persistence.enabled=true \
+  --set loki.persistence.storageClassName="ebs-sc" \
+  --set loki.persistence.size="10Gi" \
+  --set promtail.enabled=true
+NAME: loki-release
+LAST DEPLOYED: Fri Mar 21 19:00:00 2025
+NAMESPACE: loki
+STATUS: deployed
+REVISION: 1
+NOTES:
+The Loki stack has been deployed to your cluster. Loki can now be added as a datasource in Grafana.
+
+See http://docs.grafana.org/features/datasources/loki/ for more detail.
+
